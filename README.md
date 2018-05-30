@@ -23,5 +23,5 @@ ssh worker-n01.use1
 
 #### Will expand too
 ```
-/usr/bin/ssh worker-n01.prod.us-east-1.postgun.com
+/usr/bin/ssh -X worker-n01.prod.us-east-1.postgun.com
 ```
