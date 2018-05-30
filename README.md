@@ -1,13 +1,13 @@
 #### If the following is true
 ```
-ln -s $GOPATH/bin/rewrite-args $HOME/bin/ssh
-export PATH="$HOME/bin:$PATH"
+alias ssh='rewrite-args ssh -X'
 ```
 
 #### and ~/.rewrite-args.conf contains
 ```json
 {
-  "items": [
+  "debug": false,
+  "rewrites": [
     {
       "match": ".use1",
       "replace": ".prod.us-east-1.postgun.com"
@@ -25,6 +25,3 @@ ssh worker-n01.use1
 ```
 /usr/bin/ssh worker-n01.prod.us-east-1.postgun.com
 ```
-
-You can setup additional links for scp or any other commands
-and any aliases you have will work with rewrite-args

@@ -22,11 +22,11 @@ const (
 
 const usage = `
 # If the following is true
-ln -s $GOPATH/bin/rewrite-args $HOME/bin/ssh
-export PATH="$HOME/bin:$PATH"
+alias ssh='rewrite-args ssh -X'
 
 # and ~/.rewrite-args.conf contains
 {
+  "debug": false,
   "rewrites": [
     {
       "match": ".use1",
@@ -39,10 +39,7 @@ export PATH="$HOME/bin:$PATH"
 ssh worker-n01.use1 
 
 # Will expand too
-/usr/bin/ssh worker-n01.prod.us-east-1.postgun.com
-
-# You can setup additional links for scp or any other commands
-# and any aliases you have will work with rewrite-args
+/usr/bin/ssh -X worker-n01.prod.us-east-1.postgun.com
 `
 
 type Replacement struct {
@@ -76,33 +73,26 @@ func main() {
 		}
 	}
 
-	//fmt.Println(os.Args)
-	if args[0] == "rewrite-args" || strings.HasSuffix(args[0], "_Run") {
+	if len(args) == 1 {
 		fmt.Println(usage)
 
 		fmt.Printf("\n%s\n", strings.Join(args, " "))
 		os.Exit(1)
 	}
 
-	self, err := os.Executable()
-	if err != nil {
-		fmt.Printf("while determing executable - %s\n", err)
-		os.Exit(1)
-	}
-
 	// Find the requested executable in the path
-	path, err := LookPath(args[0], self)
+	path, err := exec.LookPath(args[1])
 	if err != nil {
-		fmt.Fprint(os.Stderr, "%s: command not found", args[0])
+		fmt.Fprintf(os.Stderr, "%s: command not found", args[1])
 		os.Exit(1)
 	}
 
 	if conf.Debug {
-		fmt.Printf(prefix+"exec: [%s] %s\n", path, args)
+		fmt.Printf(prefix+"exec: [%s] %s\n", path, args[1:])
 	}
 
 	// os.Exec with replaced arguments
-	err = syscall.Exec(path, args, os.Environ())
+	err = syscall.Exec(path, args[1:], os.Environ())
 	if err != nil {
 		fmt.Fprintf(os.Stderr, prefix+"exec: %s\n", err)
 		os.Exit(1)
