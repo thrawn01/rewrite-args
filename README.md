@@ -1,3 +1,5 @@
+## Synopsis
+
 #### If the following is true
 ```
 alias ssh='rewrite-args ssh -X'
@@ -25,3 +27,11 @@ ssh worker-n01.use1
 ```
 /usr/bin/ssh -X worker-n01.prod.us-east-1.postgun.com
 ```
+
+## Installation
+
+Download the latest binary [release](https://github.com/thrawn01/rewrite-args/releases)
+
+**OR**
+
+`go install github.com/thrawn01/rewrite-args`
